@@ -163,7 +163,12 @@ func newRaft(c *Config) *Raft {
 		panic(err.Error())
 	}
 	// Your Code Here (2A).
-	return nil
+	return &Raft{
+		id:      c.ID,
+		RaftLog: nil,
+		Prs:     nil,
+		State:   StateFollower,
+	}
 }
 
 // sendAppend sends an append RPC with new entries (if any) and the
@@ -181,6 +186,8 @@ func (r *Raft) sendHeartbeat(to uint64) {
 // tick advances the internal logical clock by a single tick.
 func (r *Raft) tick() {
 	// Your Code Here (2A).
+	r.electionElapsed++
+	r.heartbeatElapsed++
 }
 
 // becomeFollower transform this peer's state to Follower
@@ -205,9 +212,25 @@ func (r *Raft) Step(m pb.Message) error {
 	// Your Code Here (2A).
 	switch r.State {
 	case StateFollower:
+		return r.setpFollower(m)
 	case StateCandidate:
+		return r.stepCandidate(m)
 	case StateLeader:
+		return r.setpLeader(m)
 	}
+	return nil
+}
+
+
+func (r *Raft) setpFollower(m pb.Message) error {
+	return nil
+}
+
+func (r *Raft) stepCandidate(m pb.Message) error {
+	return nil
+}
+
+func (r *Raft) setpLeader(m pb.Message) error {
 	return nil
 }
 
@@ -219,6 +242,7 @@ func (r *Raft) handleAppendEntries(m pb.Message) {
 // handleHeartbeat handle Heartbeat RPC request
 func (r *Raft) handleHeartbeat(m pb.Message) {
 	// Your Code Here (2A).
+
 }
 
 // handleSnapshot handle Snapshot RPC request
